@@ -1,6 +1,8 @@
 import { FC, useEffect } from 'react';
 import { useFetchCallsQuery } from '../../store/callApi/callApi';
 import { HeaderCallTable } from './HeaderCallTable/HeaderCallTable';
+import { CallItemTable } from './CallItemTable/CallItemTable';
+import { CallTableWrapper } from './CallTable.styled';
 interface ICallTableProps {}
 
 export const CallTable: FC<ICallTableProps> = ({}) => {
@@ -11,8 +13,9 @@ export const CallTable: FC<ICallTableProps> = ({}) => {
     }, [isLoading]);
 
     return (
-        <div>
+        <CallTableWrapper>
             <HeaderCallTable />
-        </div>
+            <CallItemTable />
+        </CallTableWrapper>
     );
 };

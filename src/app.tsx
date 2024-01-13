@@ -1,10 +1,11 @@
+import { AppContainer } from './assets/styles/app.styles';
 import { CallTable } from './components/CallTable/CallTable';
 
 function App() {
     return (
-        <div>
+        <AppContainer>
             <CallTable />
-        </div>
+        </AppContainer>
     );
 }
 
