@@ -1,19 +1,29 @@
 import styled from 'styled-components';
 
 export const HeaderCallTableWrapper = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(7, auto);
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
     height: 65px;
     background-color: bisque;
     color: #5e7793;
-    font-size: 14px;
+    @media (max-width: 1440px) {
+        grid-template-columns: repeat(6, minmax(75px, 1fr)) minmax(0, 1fr);
+    }
 `;
 
-export const HeaderCallTableLink = styled.a<{ marginRight?: string }>`
+export const HeaderCallTableLink = styled.a<{ paddingRight?: string }>`
     color: inherit;
     text-decoration: none;
     cursor: pointer;
-    margin-right: ${props => props.marginRight || '0px'};
+    padding-right: ${props => props.paddingRight || '0'};
+    &:last-child {
+        @media (max-width: 1440px) {
+            justify-self: flex-end;
+        }
+    }
+
+    @media (max-width: 1440px) {
+        padding-right: 2%;
+    }
 `;
