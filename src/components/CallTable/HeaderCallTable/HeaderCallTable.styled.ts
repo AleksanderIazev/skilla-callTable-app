@@ -5,7 +5,8 @@ export const HeaderCallTableWrapper = styled.div`
     grid-template-columns: repeat(7, auto);
     align-items: center;
     height: 65px;
-    background-color: bisque;
+    padding: 0 40px;
+    border-bottom: 1px solid #eaf0fa;
     color: #5e7793;
     @media (max-width: 1440px) {
         grid-template-columns: repeat(6, minmax(75px, 1fr)) minmax(0, 1fr);

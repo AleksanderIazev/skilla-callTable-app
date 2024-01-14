@@ -16,6 +16,5 @@ export default createGlobalStyle`
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-     background-color: #F1F4F9;
   }
 `;
