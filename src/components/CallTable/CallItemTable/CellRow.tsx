@@ -56,7 +56,7 @@ export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
             {/* <CellItem>{time !== 0 && formatTime(time!)}</CellItem> */}
             <CellItem>
                 {time === 0 ? null : record === selectedRecord ? (
-                    <AudioPlayer record={recordData!} />
+                    <AudioPlayer record={recordData!} recordTime={time!}/>
                 ) : (
                     formatTime(time!)
                 )}

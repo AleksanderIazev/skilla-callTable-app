@@ -10,9 +10,11 @@ export const CellRow = styled.tr`
     cursor: pointer;
     transition: 150ms ease-in-out;
     color: #122945;
+    position: relative;
+    z-index: 1;
 
     &:hover {
-        background-color: #eaf0fa;
+        background-color: #F8FAFD;
     }
 `;
 
