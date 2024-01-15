@@ -6,13 +6,21 @@ import incoming from '../../../assets/icons/Property 1=incoming.svg';
 import outgoing from '../../../assets/icons/Property 1=outgoing.svg';
 import { formatTime } from '../../../helpers/formatTime';
 import { formatPhoneNumber } from '../../../helpers/formatPhoneNumber';
+import { AudioPlayer } from '../../AudioPlayer/AudioPlayer';
 
 const callsTypeIcons: { [key: string]: string } = {
     1: incoming,
     0: outgoing,
 };
 
-export const CellItemRow: FC<Partial<ICallItemTableProps>> = ({
+interface CellItemRowProps extends ICallItemTableProps {
+    selectedRecord: string | null;
+    setSelectedRecord: any;
+    getRecord: any;
+    recordData: string;
+}
+
+export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
     id,
     in_out,
     date,
@@ -21,9 +29,22 @@ export const CellItemRow: FC<Partial<ICallItemTableProps>> = ({
     to_number,
     from_number,
     time,
+    record,
+    getRecord,
+    selectedRecord,
+    setSelectedRecord,
+    recordData,
 }) => {
     return (
-        <CellRow key={id}>
+        <CellRow
+            key={id}
+            onClick={() => {
+                if (record !== '') {
+                    setSelectedRecord(record);
+                    getRecord(record);
+                }
+            }}
+        >
             <CellItem>{in_out !== undefined && <img src={callsTypeIcons[in_out]} alt='callTypeIcon' />}</CellItem>
             <CellItem>{formatTime(date!)}</CellItem>
             <CellItem>
@@ -32,7 +53,14 @@ export const CellItemRow: FC<Partial<ICallItemTableProps>> = ({
             <CellItem>{in_out !== 0 ? formatPhoneNumber(from_number!) : formatPhoneNumber(to_number!)}</CellItem>
             <CellItem>{source}</CellItem>
             <CellItem>Оценка</CellItem>
-            <CellItem>{time !== 0 && formatTime(time!)}</CellItem>
+            {/* <CellItem>{time !== 0 && formatTime(time!)}</CellItem> */}
+            <CellItem>
+                {time === 0 ? null : record === selectedRecord ? (
+                    <AudioPlayer record={recordData!} />
+                ) : (
+                    formatTime(time!)
+                )}
+            </CellItem>
         </CellRow>
     );
 };
