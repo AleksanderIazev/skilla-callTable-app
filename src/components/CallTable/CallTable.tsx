@@ -7,10 +7,8 @@ import { CallTableStyled } from './CallTable.styled';
 
 export const CallTable: FC = () => {
     const { data: calls, isLoading } = useFetchCallsQuery({});
-    const [getRecord, { data: recordData }] = useFetchRecordMutation();
+    const [getRecord, { data: recordData, isLoading: recordLoading }] = useFetchRecordMutation();
     const [selectedRecord, setSelectedRecord] = useState<string | null>(null);
-
-    console.log(calls);
 
     return (
         <CallTableStyled>
@@ -23,6 +21,7 @@ export const CallTable: FC = () => {
                             setSelectedRecord={setSelectedRecord}
                             getRecord={getRecord}
                             recordData={recordData}
+                            recordLoading={recordLoading}
                             {...props}
                         />
                     ))}

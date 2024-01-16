@@ -1,95 +1,148 @@
-import { FC, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import playIcon from "../../assets/icons/play.svg"
-import pauseIcon from "../../assets/icons/pause.svg"
-import downloadIcon from "../../assets/icons/download.svg"
-import { formatTime } from "../../helpers/formatTime";
+import { FC, useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
+import playIcon from '../../assets/icons/play.svg';
+import pauseIcon from '../../assets/icons/pause.svg';
+import downloadIcon from '../../assets/icons/download.svg';
+import { formatTime } from '../../helpers/formatTime';
 
-
-interface AudioPlayerProps  {
-      record: string,
-      recordTime: number
+interface AudioPlayerProps {
+    record: string;
+    recordTime: number;
+    setSelectedRecord: any;
 }
 
 const AudioPlayerStyled = styled.div`
-      min-width: 352px;
-      height: 48px;
-      background-color: #EAF0FA;
-      border-radius: 48px;
+    min-width: 352px;
+    height: 48px;
+    background-color: #eaf0fa;
+    border-radius: 48px;
 
-      cursor: default;
-      position: absolute;
-      right: 0;
-      top: 10%;
-      z-index: 5;
+    cursor: default;
+    position: absolute;
+    right: 0;
+    top: 10%;
+    z-index: 5;
 
-      display: flex;
-      align-items: center;
-      padding: 0 18px;
-      gap: 12px;
-`
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 12px;
+`;
 
 const AudioPlayerButton = styled.button`
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-`
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+`;
 
 const AudioProgres = styled.div`
-      width: 164px;
-      height: 4px;
+    width: 164px;
+    height: 4px;
+    border-radius: 50px;
+    overflow: hidden;
+    background-color: #adbfdf;
+`;
 
-      background-color: #ADBFDF;
-`
+const Progress = styled.div<{ step?: number }>`
+    transition: 200ms ease-in-out;
+    width: ${props => props.step + '%'};
+    height: 4px;
+    background-color: #002cfb;
+`;
 
+const DownloadHref = styled.a`
+    &:hover {
+        svg {
+            path {
+                fill: #002cfb;
+            }
+        }
+    }
+`;
 
-export const AudioPlayer:FC<AudioPlayerProps> = ({record, recordTime}) => {
-      const [isPlayed, setIsPlayed] = useState(false)
-      const [time, setTime] = useState(recordTime)
-      const recordRef = useRef<undefined | HTMLAudioElement>()
-      const timerRef = useRef<any>(null)
+export const AudioPlayer: FC<AudioPlayerProps> = ({ record, recordTime , setSelectedRecord}) => {
+    const [showClose, setShowClose] = useState(false);
+    const [isPlayed, setIsPlayed] = useState(false);
+    const [time, setTime] = useState(recordTime);
+    const recordRef = useRef<undefined | HTMLAudioElement>();
 
+    useEffect(() => {
+        recordRef.current = new Audio(record);
+    }, [record]);
 
-      useEffect(() => {
-            recordRef.current = new Audio(record)
-      }, [record])
-
-      useEffect(() => {
-            if(isPlayed) {
-                  timerRef.current = window.setInterval(() => {
-                        setTime(prevTime => prevTime - 1)
-                  }, 1000)
+    useEffect(() => {
+        const timer = () => {
+            if (recordRef.current?.ended) {
+                handlePause();
+                recordRef.current?.removeEventListener('timeupdate', timer);
             } else {
-                  clearInterval(timerRef.current)
+                setTime(Math.floor(recordRef.current?.currentTime!));
             }
+        };
 
-            if(time === 0) {
-                  clearInterval(timerRef.current)
-                  recordRef.current?.pause()
-                  setTime(recordTime)
-                  setIsPlayed(false)
-            }
+        recordRef.current?.addEventListener('timeupdate', timer);
 
-            return () => {
-                  clearInterval(timerRef.current)
-            }
-      }, [isPlayed, time])
+        return () => {
+            recordRef.current?.removeEventListener('timeupdate', timer);
+        };
+    }, [isPlayed, time]);
 
-      return (
-            <AudioPlayerStyled onClick={(e) => e.stopPropagation()}>
-                  <span>{formatTime(time)}</span>
-                  <AudioPlayerButton onClick={() => {
-                        setIsPlayed(prev => !prev)
+    useEffect(() => {
+        return () => {
+            recordRef.current?.pause();
+        };
+    }, []);
 
-                        if(!isPlayed) {
-                              recordRef.current?.play()
-                        } else {
-                              recordRef.current?.pause()
-                        }
-                        
-                  }}><img src={isPlayed ? pauseIcon: playIcon} alt="icon"/></AudioPlayerButton>
-                  <AudioProgres></AudioProgres>
-                  <AudioPlayerButton><img src={downloadIcon} alt="play icon"/></AudioPlayerButton>
-            </AudioPlayerStyled>
-      );
+    function handlePlay() {
+        setIsPlayed(true);
+        recordRef.current?.play();
+    }
+
+    function handlePause() {
+        setIsPlayed(false);
+        recordRef.current?.pause();
+    }
+
+    return (
+        <AudioPlayerStyled onClick={e => e.stopPropagation()} onMouseEnter={() => {setShowClose(true)}} onMouseLeave={() => setShowClose(false)}>
+            <span>{formatTime(time)}</span>
+            <AudioPlayerButton
+                onClick={() => {
+                    if (!isPlayed) {
+                        handlePlay();
+                    } else {
+                        handlePause();
+                    }
+                }}
+            >
+                <img src={isPlayed ? pauseIcon : playIcon} alt='icon' />
+            </AudioPlayerButton>
+            <AudioProgres>
+                {isPlayed && <Progress step={(100 * recordRef.current?.currentTime!) / recordTime}></Progress>}
+            </AudioProgres>
+            <DownloadHref href={record}>
+                <svg width='13' height='16' viewBox='0 0 13 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                    <path
+                        d='M0 16H13V14.1176H0V16ZM13 5.64706H9.28571V0H3.71429V5.64706H0L6.5 12.2353L13 5.64706Z'
+                        fill='#ADBFDF'
+                    />
+                </svg>
+            </DownloadHref>
+            {showClose && (
+                <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' onClick={() => setSelectedRecord(null)}>
+                    <g clip-path='url(#clip0_20502_11570)'>
+                        <path
+                            d='M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z'
+                            fill='#ADBFDF'
+                        />
+                    </g>
+                    <defs>
+                        <clipPath id='clip0_20502_11570'>
+                            <rect width='24' height='24' fill='white' />
+                        </clipPath>
+                    </defs>
+                </svg>
+            )}
+        </AudioPlayerStyled>
+    );
 };

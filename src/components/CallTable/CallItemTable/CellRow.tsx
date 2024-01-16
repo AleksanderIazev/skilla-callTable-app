@@ -18,6 +18,7 @@ interface CellItemRowProps extends ICallItemTableProps {
     setSelectedRecord: any;
     getRecord: any;
     recordData: string;
+    recordLoading: boolean;
 }
 
 export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
@@ -33,6 +34,7 @@ export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
     getRecord,
     selectedRecord,
     setSelectedRecord,
+    recordLoading,
     recordData,
 }) => {
     return (
@@ -56,7 +58,7 @@ export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
             {/* <CellItem>{time !== 0 && formatTime(time!)}</CellItem> */}
             <CellItem>
                 {time === 0 ? null : record === selectedRecord ? (
-                    <AudioPlayer record={recordData!} recordTime={time!}/>
+                    !recordLoading && <AudioPlayer record={recordData!} recordTime={time!} setSelectedRecord={setSelectedRecord}/>
                 ) : (
                     formatTime(time!)
                 )}
