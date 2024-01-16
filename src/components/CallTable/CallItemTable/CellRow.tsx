@@ -1,25 +1,17 @@
 import { FC } from 'react';
-import { CellItemAvatar, CellRow } from './CallRow.styled';
-import { ICallItemTableProps } from './CellItemTable.types';
-import { CellItem } from '../HeaderCallTable/HeaderCallTable.styled';
-import incoming from '../../../assets/icons/Property 1=incoming.svg';
-import outgoing from '../../../assets/icons/Property 1=outgoing.svg';
+import { CellItemRowProps } from './CellItemTable.types';
 import { formatTime } from '../../../helpers/formatTime';
 import { formatPhoneNumber } from '../../../helpers/formatPhoneNumber';
 import { AudioPlayer } from '../../AudioPlayer/AudioPlayer';
+import { CellItem } from '../HeaderCallTable/HeaderCallTable.styled';
+import { CellItemAvatar, CellRow } from './CellRow.styled';
+import incoming from '../../../assets/icons/Property 1=incoming.svg';
+import outgoing from '../../../assets/icons/Property 1=outgoing.svg';
 
 const callsTypeIcons: { [key: string]: string } = {
     1: incoming,
     0: outgoing,
 };
-
-interface CellItemRowProps extends ICallItemTableProps {
-    selectedRecord: string | null;
-    setSelectedRecord: any;
-    getRecord: any;
-    recordData: string;
-    recordLoading: boolean;
-}
 
 export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
     id,
@@ -37,16 +29,15 @@ export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
     recordLoading,
     recordData,
 }) => {
+    function handleSelectRecord() {
+        if (record !== '') {
+            setSelectedRecord(record);
+            getRecord(record);
+        }
+    }
+
     return (
-        <CellRow
-            key={id}
-            onClick={() => {
-                if (record !== '') {
-                    setSelectedRecord(record);
-                    getRecord(record);
-                }
-            }}
-        >
+        <CellRow key={id} onClick={handleSelectRecord}>
             <CellItem>{in_out !== undefined && <img src={callsTypeIcons[in_out]} alt='callTypeIcon' />}</CellItem>
             <CellItem>{formatTime(date!)}</CellItem>
             <CellItem>
@@ -57,11 +48,13 @@ export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
             <CellItem>Оценка</CellItem>
             {/* <CellItem>{time !== 0 && formatTime(time!)}</CellItem> */}
             <CellItem>
-                {time === 0 ? null : record === selectedRecord ? (
-                    !recordLoading && <AudioPlayer record={recordData!} recordTime={time!} setSelectedRecord={setSelectedRecord}/>
-                ) : (
-                    formatTime(time!)
-                )}
+                {time === 0
+                    ? null
+                    : record === selectedRecord
+                    ? !recordLoading && (
+                          <AudioPlayer record={recordData!} recordTime={time!} setSelectedRecord={setSelectedRecord} />
+                      )
+                    : formatTime(time!)}
             </CellItem>
         </CellRow>
     );

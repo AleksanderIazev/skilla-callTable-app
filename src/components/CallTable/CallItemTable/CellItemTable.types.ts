@@ -41,3 +41,11 @@ export interface ICallItemTableProps {
     to_extension: string;
     to_number: string;
 }
+
+export interface CellItemRowProps extends ICallItemTableProps {
+    selectedRecord: string | null;
+    setSelectedRecord: any;
+    getRecord: any;
+    recordData: string;
+    recordLoading: boolean;
+}
