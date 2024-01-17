@@ -40,23 +40,23 @@ export const AudioPlayer: FC<AudioPlayerProps> = ({ record, recordTime, setSelec
         };
     }, []);
 
-    function handlePlay() {
+    const handlePlay = () => {
         setIsPlayed(true);
         recordRef.current?.play();
-    }
+    };
 
-    function handlePause() {
+    const handlePause = () => {
         setIsPlayed(false);
         recordRef.current?.pause();
-    }
+    };
 
-    function handlePlayStop() {
+    const handlePlayStop = () => {
         if (!isPlayed) {
             handlePlay();
         } else {
             handlePause();
         }
-    }
+    };
 
     const handleMouseEnter = () => {
         setShowClose(true);

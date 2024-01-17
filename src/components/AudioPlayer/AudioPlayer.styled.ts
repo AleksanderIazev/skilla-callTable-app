@@ -32,6 +32,7 @@ export const AudioProgress = styled.div`
 `;
 
 export const Progress = styled.div<{ step?: number }>`
+    cursor: pointer;
     transition: 200ms ease-in-out;
     width: ${props => props.step + '%'};
     height: 4px;

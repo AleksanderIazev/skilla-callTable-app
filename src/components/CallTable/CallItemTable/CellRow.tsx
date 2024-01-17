@@ -30,7 +30,7 @@ export const CellItemRow: FC<Partial<CellItemRowProps>> = ({
     recordData,
 }) => {
     function handleSelectRecord() {
-        if (record !== '') {
+        if (record !== '' && selectedRecord !== record) {
             setSelectedRecord(record);
             getRecord(record);
         }
